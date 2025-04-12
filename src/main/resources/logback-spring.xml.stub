@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="true">
+	<include
+		resource="org/springframework/boot/logging/logback/defaults.xml" />
+	<property resource="application.properties" />
+	<property resource="application.yml" />
+
+	<springProperty name="graylogHost" source="graylog.host" />
+	<springProperty name="graylogPort" source="graylog.port" />
+	<springProperty name="host" source="host" />
+
+	<appender name="DEBUG_APP"
+		class="ch.qos.logback.core.ConsoleAppender">
+		<encoder
+			class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+			<providers>
+				<pattern>
+					<pattern>
+						{
+						"lt": "dbap",
+						"ll": "%level",
+						"tl": "%d{yyyy-MM-dd HH:mm:ss, GMT+7}",
+						"ex_baggage": "%X{key:-}",
+						"ex_pid": "${PID:-}",
+						"ex_thread": "%thread",
+						"ex_class": "%logger{40}",
+						"ex_msg": "%msg",
+						"ex_trace": "%X{traceId:-}",
+						"ex_span": "%X{spanId:-}"
+						}
+					</pattern>
+				</pattern>
+				<stackTrace />
+			</providers>
+		</encoder>
+	</appender>
+	<appender name="ACCESS_LOG"
+		class="ch.qos.logback.core.ConsoleAppender">
+		<encoder
+			class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+			<providers>
+				<pattern>
+					<pattern>
+						{
+						"lt": "dbal",
+						"url": "%X{url}",
+						"urp": "%X{uri_path}",
+						"urq": "%X{uri_query_string}",
+						"rt": "%X{response_time}",
+						"st": "%X{status_code}",
+						"mt": "%X{method}",
+						"rmip": "%X{remote_addr}",
+						"cip": "%X{cip}",
+						"bbs": "%X{body_bytes_sent}",
+						"cl": "%X{content_length}",
+						"rf": "%X{http_referer}",
+						"ua": "%X{user_argent}",
+						"host": "%X{host}",
+						"sn": "%X{server_name}",
+						"tl": "%d{yyyy-MM-dd HH:mm:ss, GMT+7}",
+						"rid": "%X{request_id}",
+						"uid": "%X{user_id}",
+						"usrc": "%X{user_source}",
+						"ex_rq": "%X{rq_body}",
+						"ex_trace": "%X{traceId:-}",
+						"ex_span": "%X{spanId:-}"
+						}
+					</pattern>
+				</pattern>
+				<stackTrace />
+			</providers>
+		</encoder>
+	</appender>	
+
+	<root level="INFO">
+		<appender-ref ref="DEBUG_APP" />Ï
+	</root>
+	<logger name="com.doomdev.admin_blog.filters.LoggingFilter" level="INFO"
+		additivity="false">
+		<appender-ref ref="ACCESS_LOG" />
+	</logger>
+</configuration>

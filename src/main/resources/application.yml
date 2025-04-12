@@ -1,0 +1,80 @@
+server:
+  port: ${SERVICE_PORT:8080}
+
+jwt:
+  expiration:
+spring:
+  application:
+    name: ${SPRING_APPLICATION_NAME}
+
+  jpa:
+    open-in-view: false
+    show-sql: true
+  datasource:
+    jdbc-url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      pool-name: BlogAdminDBCP
+      jdbc-url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      auto-commit: true
+      connection-timeout: 30000
+      idle-timeout: 60000
+      max-lifetime: 180000
+      minimum-idle: 50
+      maximum-pool-size: 500
+      data-source-properties:
+        cachePrepStmts: true
+        prepStmtCacheSize: 250
+        prepStmtCacheSqlLimit: 2048
+        useServerPrepStmts: true
+        useLocalSessionState: true
+        rewriteBatchedStatements: true
+        cacheResultSetMetadata: true
+        cacheServerConfiguration: true
+        elideSetAutoCommits: true
+        maintainTimeStats: false
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 5MB
+      max-request-size: 50MB
+  data:
+    redis:
+      sentinel:
+        master: ${redis.sentinel.master}
+        password: ${redis.sentinel.password}
+        nodes: ${redis.sentinel.nodes}
+      lettuce:
+        shutdown-timeout: 200ms
+      repositories:
+        enabled: true
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /doc-ui.html
+    operations-sorter: method
+
+redis:
+  sentinel:
+    master: ${REDIS_SENTINEL_MASTER}
+    password: ${REDIS_SENTINEL_PASSWORD}
+    nodes: ${REDIS_SENTINEL_NODES}
+  prefix-key:
+    server-token: ${REDIS_PREFIX_KEY_SERVER_TOKEN}
+
+admin-blog:
+  iam:
+    url: ${IDENTITY_SERVICE_URL:http://localhost:8888}
+  cors: ${CORS_ALLOW_ORIGIN}
+
+
+auth:
+  provider:
+    default: IAM_IDENTITY
